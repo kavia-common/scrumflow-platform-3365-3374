@@ -1,9 +1,12 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { fetchTeam } from './teams.thunks';
 
 const teamsSlice = createSlice({
   name: 'teams',
   initialState: {
-    members: [], // {id, name, role, avatar?}
+    members: [], // {id, name, role}
+    loading: false,
+    error: null,
   },
   reducers: {
     // PUBLIC_INTERFACE
@@ -25,6 +28,21 @@ const teamsSlice = createSlice({
       const idx = state.members.findIndex((m) => m.id === id);
       if (idx >= 0) state.members[idx] = { ...state.members[idx], ...changes };
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTeam.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTeam.fulfilled, (state, action) => {
+        state.loading = false;
+        state.members = action.payload;
+      })
+      .addCase(fetchTeam.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to load team';
+      });
   },
 });
 

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import TaskCard from './TaskCard';
 import TaskModal from './TaskModal';
 import { moveTask, updateTask } from '../state/slices/tasks';
+import { moveRemoteTask, saveTask } from '../state/slices/tasks.thunks';
 
 const COLUMNS = [
   { id: 'backlog', title: 'Backlog' },
@@ -28,7 +29,11 @@ export default function KanbanBoard() {
   });
 
   const handleDrop = (taskId, status) => {
+    // optimistic update
     dispatch(moveTask({ id: taskId, status }));
+    // persist to backend (map 'review' to 'in_progress' for backend if needed)
+    const persistedStatus = status === 'review' ? 'in_progress' : status;
+    dispatch(moveRemoteTask({ id: taskId, status: persistedStatus }));
   };
 
   return (
@@ -61,7 +66,18 @@ export default function KanbanBoard() {
         task={selected}
         onClose={() => setSelected(null)}
         onSave={(updated) => {
+          // keep local state aligned
           dispatch(updateTask({ id: updated.id, changes: updated }));
+          // persist mapped fields
+          dispatch(saveTask({ id: updated.id, changes: {
+            title: updated.title,
+            description: updated.description,
+            status: updated.status === 'review' ? 'in_progress' : updated.status,
+            points: updated.points,
+            assigneeId: updated.assigneeId ?? null,
+            sprintId: updated.sprintId ?? null,
+            boardId: updated.boardId ?? null,
+          }}));
           setSelected(null);
         }}
       />

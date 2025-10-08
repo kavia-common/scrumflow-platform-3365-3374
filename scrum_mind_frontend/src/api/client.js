@@ -2,6 +2,7 @@
  * Lightweight API client for Scrum Mind frontend.
  * Uses REACT_APP_API_BASE_URL or defaults to http://localhost:3001.
  * Adds JSON handling and basic error reporting.
+ * Note: Set REACT_APP_API_BASE_URL in .env to point to your backend origin.
  */
 
 const BASE_URL =
