@@ -95,6 +95,28 @@
   color: var(--primary);
 }
 
+input, textarea {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+input:focus, textarea:focus, .btn:focus, .task-card:focus {
+  outline: 2px solid rgba(30,58,138,0.3);
+  outline-offset: 1px;
+}
+
+.btn:hover {
+  filter: brightness(0.95);
+  box-shadow: 0 8px 24px rgba(17, 24, 39, 0.12);
+}
+
+.btn.secondary:hover {
+  filter: brightness(1.05);
+}
+
 /* Content */
 .app-content {
   padding: 20px;
@@ -140,6 +162,7 @@
   padding: 10px;
   margin-bottom: 8px;
   box-shadow: var(--shadow);
+  outline: none;
 }
 
 .btn {
@@ -149,6 +172,7 @@
   background: var(--primary);
   color: #fff;
   cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .btn.secondary {
