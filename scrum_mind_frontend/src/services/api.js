@@ -45,11 +45,17 @@ export const authApi = {
 };
 
 // Basic helpers pointing to backend routes
+/* eslint-disable no-useless-escape */
 // PUBLIC_INTERFACE
 export const boardsApi = {
   /** List boards by team (requires teamId) -> GET /api/boards/team/{team_id} */
   async listByTeam(teamId, { limit = 100, offset = 0 } = {}) {
     const res = await api.get(`/api/boards/team/${teamId}`, { params: { limit, offset } });
+    return res.data || [];
+  },
+  /** List all boards (fallback when team is not specified) -> GET /api/boards */
+  async list({ limit = 100, offset = 0 } = {}) {
+    const res = await api.get('/api/boards', { params: { limit, offset } });
     return res.data || [];
   },
   /** Create a new board -> POST /api/boards */
@@ -62,13 +68,24 @@ export const boardsApi = {
     const res = await api.get(`/api/boards/${boardId}`);
     return res.data;
   },
+  /** Update board task status -> PATCH /api/boards/{board_id}/tasks/{task_id}/status */
+  async updateTaskStatus(boardId, taskId, status) {
+    const res = await api.patch(`/api/boards/${boardId}/tasks/${taskId}/status`, { status });
+    return res.data;
+  },
 };
 
+/* eslint-disable no-useless-escape */
 // PUBLIC_INTERFACE
 export const sprintsApi = {
   /** List sprints for a board -> GET /api/sprints/board/{board_id} */
   async listByBoard(boardId, { limit = 100, offset = 0 } = {}) {
     const res = await api.get(`/api/sprints/board/${boardId}`, { params: { limit, offset } });
+    return res.data || [];
+  },
+  /** List sprints (fallback) -> GET /api/sprints */
+  async list({ limit = 100, offset = 0 } = {}) {
+    const res = await api.get('/api/sprints', { params: { limit, offset } });
     return res.data || [];
   },
   /** Create sprint -> POST /api/sprints */
@@ -79,6 +96,11 @@ export const sprintsApi = {
   /** Get sprint by id -> GET /api/sprints/{sprint_id} */
   async get(sprintId) {
     const res = await api.get(`/api/sprints/${sprintId}`);
+    return res.data;
+  },
+  /** Update sprint -> PATCH /api/sprints/{sprint_id} */
+  async update(sprintId, payload) {
+    const res = await api.patch(`/api/sprints/${sprintId}`, payload);
     return res.data;
   },
 };
@@ -112,6 +134,7 @@ export const tasksApi = {
   },
 };
 
+/* eslint-disable no-useless-escape */
 // PUBLIC_INTERFACE
 export const teamsApi = {
   /** List teams -> GET /api/teams */
@@ -122,6 +145,11 @@ export const teamsApi = {
   /** Get team by id -> GET /api/teams/{team_id} */
   async get(teamId) {
     const res = await api.get(`/api/teams/${teamId}`);
+    return res.data;
+  },
+  /** Invite a user -> POST /api/teams/invite */
+  async invite(payload) {
+    const res = await api.post('/api/teams/invite', payload);
     return res.data;
   },
 };

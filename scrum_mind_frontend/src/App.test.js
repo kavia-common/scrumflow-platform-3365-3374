@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders application shell', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  // Sidebar brand badge "S" and app name "Scrum Mind" are part of the shell
+  const brand = screen.getByText(/Scrum Mind/i);
+  expect(brand).toBeInTheDocument();
 });
