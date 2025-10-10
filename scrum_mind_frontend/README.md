@@ -27,6 +27,18 @@ Launches the test runner in interactive watch mode.
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
+## Dependency updates (2025-10)
+
+- React and React DOM updated to 18.3.x
+- React Router DOM updated to 6.27.x
+- ESLint and plugins updated to latest 9.x compatible ranges
+- Testing Library packages kept within latest safe major versions
+- No code changes were required for these upgrades; existing CRA scripts continue to work
+
+If you encounter type or lint errors after installing dependencies, run:
+- `npm run lint:fix` to auto-fix issues
+- `npm test` to verify the app still renders correctly
+
 ## Customization
 
 ### Colors
