@@ -1,82 +1,34 @@
-# Lightweight React Template for KAVIA
+# Scrum Mind Frontend
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+Minimal React app styled with the Ocean Professional theme.
 
-## Features
+Quickstart
+- Prereqs: Node 18+, npm
+- Install: npm install
+- Env (optional): create .env with REACT_APP_API_BASE_URL=http://localhost:3001
+  - If omitted, defaults to http://localhost:3001
+- Start (dev): npm start (runs on http://localhost:3000)
+- Test (CI mode): CI=true npm test
+- Build: npm run build
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+Environment
+- REACT_APP_API_BASE_URL: URL of backend API (CORS allows http://localhost:3000 by default on backend).
 
-## Getting Started
+Backend
+- See ../../scrumflow-platform-3365-3375/backend/README.md for backend setup.
+- You can enable SEED=true on backend to auto-generate sample data.
 
-In the project directory, you can run:
+Smoke-test checklist
+- Boards load (GET /boards), first board auto-selected.
+- Sprints fetch (GET /sprints?board_id=...).
+- Tasks fetch (GET /tasks?board_id=...); Kanban shows Backlog, To Do, In Progress, Review, Done.
+- CRUD:
+  - Create: "+ Quick Add Task" (POST /tasks).
+  - Update: edit via task modal (PUT /tasks/:id).
+- Drag/move:
+  - Drag between columns; "review" is persisted as in_progress (POST /tasks/:id/move).
+- Team list: Team page (GET /team).
+- Progress summary: Progress page calls /progress/summary.
 
-### `npm start`
-
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-### `npm test`
-
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
-```
-
-### Components
-
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
-
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
-
-## Learn More
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Notes
+- The UI shows a "Review" column for workflow granularity; persisted as in_progress to match backend enums.
