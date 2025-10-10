@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Resolve API base URL from env with sensible local default
 const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
 
 // Create axios instance
@@ -18,55 +19,109 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Basic helpers for common endpoints used in pages.
+// PUBLIC_INTERFACE
+export const authApi = {
+  /** POST /api/auth/register */
+  async register(payload) {
+    const res = await api.post('/api/auth/register', payload);
+    return res.data;
+  },
+  /** POST /api/auth/login (x-www-form-urlencoded) */
+  async login({ email, password }) {
+    const params = new URLSearchParams();
+    params.append('username', email);
+    params.append('password', password);
+    // FastAPI OAuth2PasswordRequestForm expects x-www-form-urlencoded
+    const res = await api.post('/api/auth/login', params, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+    return res.data;
+  },
+  /** GET /api/auth/me */
+  async me() {
+    const res = await api.get('/api/auth/me');
+    return res.data;
+  },
+};
+
+// Basic helpers pointing to backend routes
 // PUBLIC_INTERFACE
 export const boardsApi = {
-  /** Get boards list */
-  async list() {
-    const res = await api.get('/boards').catch(() => ({ data: [] }));
+  /** List boards by team (requires teamId) -> GET /api/boards/team/{team_id} */
+  async listByTeam(teamId, { limit = 100, offset = 0 } = {}) {
+    const res = await api.get(`/api/boards/team/${teamId}`, { params: { limit, offset } });
     return res.data || [];
   },
-  /** Create a new board */
+  /** Create a new board -> POST /api/boards */
   async create(payload) {
-    const res = await api.post('/boards', payload).catch(() => ({ data: payload }));
+    const res = await api.post('/api/boards', payload);
     return res.data;
   },
-  /** Get board by id */
-  async get(id) {
-    const res = await api.get(`/boards/${id}`).catch(() => ({ data: null }));
+  /** Get board by id -> GET /api/boards/{board_id} */
+  async get(boardId) {
+    const res = await api.get(`/api/boards/${boardId}`);
     return res.data;
   },
-  /** Update task status simple endpoint */
-  async updateTaskStatus(boardId, taskId, status) {
-    const res = await api.patch(`/boards/${boardId}/tasks/${taskId}`, { status }).catch(() => ({ data: { id: taskId, status } }));
-    return res.data;
-  }
 };
 
 // PUBLIC_INTERFACE
 export const sprintsApi = {
-  async list() {
-    const res = await api.get('/sprints').catch(() => ({ data: [] }));
+  /** List sprints for a board -> GET /api/sprints/board/{board_id} */
+  async listByBoard(boardId, { limit = 100, offset = 0 } = {}) {
+    const res = await api.get(`/api/sprints/board/${boardId}`, { params: { limit, offset } });
     return res.data || [];
   },
+  /** Create sprint -> POST /api/sprints */
   async create(payload) {
-    const res = await api.post('/sprints', payload).catch(() => ({ data: payload }));
+    const res = await api.post('/api/sprints', payload);
     return res.data;
   },
-  async update(id, payload) {
-    const res = await api.patch(`/sprints/${id}`, payload).catch(() => ({ data: { ...payload, id } }));
+  /** Get sprint by id -> GET /api/sprints/{sprint_id} */
+  async get(sprintId) {
+    const res = await api.get(`/api/sprints/${sprintId}`);
     return res.data;
-  }
+  },
+};
+
+// PUBLIC_INTERFACE
+export const tasksApi = {
+  /** List tasks for a board -> GET /api/tasks/board/{board_id} */
+  async listByBoard(boardId, { status, assigneeId, limit = 100, offset = 0 } = {}) {
+    const params = {};
+    if (status) params.status_filter = status;
+    if (assigneeId) params.assignee_id = assigneeId;
+    params.limit = limit;
+    params.offset = offset;
+    const res = await api.get(`/api/tasks/board/${boardId}`, { params });
+    return res.data || [];
+  },
+  /** Create task -> POST /api/tasks */
+  async create(payload) {
+    const res = await api.post('/api/tasks', payload);
+    return res.data;
+  },
+  /** Get task by id -> GET /api/tasks/{task_id} */
+  async get(taskId) {
+    const res = await api.get(`/api/tasks/${taskId}`);
+    return res.data;
+  },
+  /** Update task status -> PATCH /api/tasks/{task_id}/status */
+  async updateStatus(taskId, status) {
+    const res = await api.patch(`/api/tasks/${taskId}/status`, { status });
+    return res.data;
+  },
 };
 
 // PUBLIC_INTERFACE
 export const teamsApi = {
-  async list() {
-    const res = await api.get('/teams').catch(() => ({ data: [] }));
+  /** List teams -> GET /api/teams */
+  async list({ limit = 100, offset = 0 } = {}) {
+    const res = await api.get('/api/teams', { params: { limit, offset } });
     return res.data || [];
   },
-  async invite(payload) {
-    // Simulated invite
-    return { success: true, ...payload };
-  }
+  /** Get team by id -> GET /api/teams/{team_id} */
+  async get(teamId) {
+    const res = await api.get(`/api/teams/${teamId}`);
+    return res.data;
+  },
 };
